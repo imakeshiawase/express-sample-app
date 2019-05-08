@@ -1,0 +1,122 @@
+﻿<!doctype html>
+<html>
+
+
+
+<head>
+  <meta name="viewport" content="width=device-width">
+  <title>隣の人とチャットできるサイト</title>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.10.3/babel.min.js"></script>
+
+  <style>
+    body {
+      padding-top:80px;
+    }
+  </style>
+</head>
+
+
+
+<body>
+
+  <div class="container">
+
+
+
+    <div class="jumbotron text-center">
+
+      <h1>
+        <span class="fa fa-anchor"></span> 隣の人と<br>チャットできるサイト
+      </h1>
+
+      <a href="/login" class="btn btn-default">
+        <span class="fa fa-user"></span> ログイン
+      </a>
+
+      <a href="/signup" class="btn btn-default">
+        <span class="fa fa-user"></span> 新規ユーザー登録
+      </a>
+
+    </div>
+
+
+		<br>
+		<br>
+
+		<div id="content"></div>
+
+		<script type="text/babel">
+
+			const List = (props_1) => {
+				return (
+					<ul>
+						{props_1.items.map(
+							(b, a) => (<li key={a}>{b}</li>)
+						)}
+					</ul>
+				);
+			}
+
+
+			class App extends React.Component {
+
+				constructor(props_2) {
+					super(props_2);
+					this.state = {items: [], text: ''};
+				}
+
+				render() {
+					return (
+						<div>
+							<h3>Reactで作ったメッセージ入力機能</h3>
+
+							<form onSubmit={this.handleSubmit.bind(this)} >
+								<input onChange={this.handleChange.bind(this)} value={this.state.text} />
+								<button>メッセージ</button>
+							</form>
+							<List items={this.state.items} />
+						</div>
+					);
+				}
+
+				handleChange(e) {
+					this.setState({text: e.target.value});
+				}
+
+				handleSubmit(e) {
+					e.preventDefault();
+					const newItem = this.state.text;
+					this.setState(
+						(prevState) => ({
+							items: prevState.items.concat(newItem),
+							text: ''
+						})
+					);
+				}
+
+			}
+
+
+			ReactDOM.render(
+				<App />,
+				document.getElementById('content')
+			);
+
+		</script>
+
+
+
+  </div>
+
+
+
+</body>
+
+
+
+</html>

@@ -1,0 +1,76 @@
+﻿<!doctype html>
+<html>
+
+
+
+<head>
+  <meta name="viewport" content="width=device-width">
+  <title>隣の人とチャットできるサイト</title>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+  <style>
+    body {
+      padding-top:80px;
+      padding-bottom:80px;
+    }
+  </style>
+</head>
+
+
+
+<body>
+  <div class="container">
+
+
+
+    <div class="page-header text-center">
+      <h1><span class="fa fa-sign-in"></span> 新規ユーザー登録</h1>
+      <br>
+      <a href="/login" class="btn btn-default">
+        <span class="fa fa-user"></span> ログイン
+      </a>
+      <a href="/" class="btn btn-default">
+        <span class="fa fa-user"></span> ホーム
+      </a>
+    </div>
+
+
+
+    <div class="col-sm-6 col-sm-offset-3">
+
+
+      <br>
+
+
+      <% if (message.length > 0) { %>
+        <div class="alert alert-danger"><%= message %></div>
+      <% } %>
+
+
+      <form action="/signup" method="post">
+
+        <div class="form-group">
+          <label>ユーザーネーム</label>
+          <input type="text" class="form-control" name="username">
+        </div>
+        <br>
+        <div class="form-group">
+          <label>パスワード</label>
+          <input type="password" class="form-control" name="password">
+        </div>
+        <br>
+        <button type="submit" class="btn btn-warning btn-lg">登録</button>
+
+      </form>
+
+
+    </div>
+
+
+
+  </div>
+</body>
+
+
+
+</html>

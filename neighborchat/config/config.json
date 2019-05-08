@@ -1,0 +1,7 @@
+{
+  "username": "db_user1",
+  "password": "Hu67r",
+  "database": "jourcle_db",
+  "host": "160.16.82.129",
+  "dialect": "mysql"
+}

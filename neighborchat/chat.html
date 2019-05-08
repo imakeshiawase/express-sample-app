@@ -1,0 +1,192 @@
+﻿<!doctype html>
+<html>
+
+
+
+
+<head>
+
+  <meta name="viewport" content="width=device-width">
+  
+  <title>隣の人とチャット</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+
+  <style>
+    body {
+      padding-top:80px;
+      padding-bottom:80px;
+      word-wrap:break-word;
+    }
+  </style>
+
+</head>
+
+
+
+
+<body>
+
+
+
+<div class="container">
+
+
+  <div class="page-header text-center">
+
+    <h1><span class="fa fa-anchor"></span> 隣の人とチャット</h1>
+    <br>
+    <a href="/dashboard" class="btn btn-default">
+      <span class="fa fa-user"></span> 前のページ
+    </a>
+    <a href="/logout" class="btn btn-default">
+      <span class="fa fa-user"></span> ログアウト
+    </a>
+
+  </div>
+
+
+  <div class="col-sm-6 col-sm-offset-3">
+
+    <br>
+
+    <form class="form-horizontal" id="chatForm">
+
+      <div class="form-group">
+        <label class="roomLabel" for="rooms">部屋名：</label>
+        <input type="text" class="form-control" id="rooms">
+      </div>
+
+      <br>
+
+      <div class="form-group">
+        <label class="nameLabel" for="msg">チャットで使う名前：</label>
+        <input type="text" class="form-control" id="msg">
+      </div>
+
+      <br>
+
+      <div class="form-group">
+        <button type="submit" class="btn btn-success btn-lg" id="button1">入室</button>
+      </div>
+
+    </form>
+
+    <br>
+
+    <div id="chatLogs">
+      <p>=====チャットログ=====</p>
+    </div>
+
+    <br>
+    <br>
+    <br>
+
+    <div id="fortune">
+      <p>======今日の運勢======</p>
+    </div>
+
+    <br>
+    <br>
+    <br>
+
+  </div>
+
+</div>
+
+
+<script>
+$(function () {
+
+  var chat = io('/chat');
+  var fortune = io('/fortune');
+
+
+  // emit_from_serverイベント・データを受信する
+  chat.on("emit_from_server", function(data){appendChat(data.chat_msg_from_server)});
+
+  fortune.on("emit_from_server", function(data) {appendFortune(data.fortune_msg)});
+ 
+  function appendChat(text1) {
+    $("#chatLogs").append($("<div>").text(text1));
+  }
+ 
+  function appendFortune(text1) {
+    $("#fortune").append($("<div>").text(text1));
+  }
+
+
+
+
+  var isEnter = false;
+  var name1 = '';
+
+  $("#chatForm").submit(function(e) {
+
+    var message1 = $("#msg").val();
+    var room1 = $("#rooms").val();
+
+    $("#msg").val('').focus();//メッセージフォームを空白に戻し、フォーカスする
+
+    if (isEnter) {   //isEnterがtrueなら入室済み
+
+      message2 = "（" + name1 + "）　" + message1;
+
+      // emit_from_clientイベント・データを送信する
+      chat.emit("emit_from_client", {chat_msg_from_client : message2});
+
+    } else {   //isEnterがfalseなら、まだ入室していない
+
+      name1 = message1;
+
+      // 自分がroomへ入室することをserver.jsへ要請
+      chat.emit("emit_from_client_join", {room : room1});
+
+      // すでに入室している人達へ、emit_from_client_broadcastイベント・データを送信する
+      var message3 = name1 + "さんが入室しました。";
+      chat.emit("emit_from_client_broadcast", {chat_msg_broadcast_from_client : message3});
+
+      // 今、入室した自分へ、emit_from_client_personalイベント・データを送信する
+      chat.json.emit("emit_from_client_personal", {
+        room : room1,
+        name : name1
+      });
+
+
+      changeLabel();
+
+    }
+    e.preventDefault();
+  });
+
+
+
+  function changeLabel() {
+
+    $(".roomLabel").text("入室中の部屋名：");
+    $("#rooms").prop("disabled", true);
+
+    $(".nameLabel").text("メッセージ：");
+
+    $("#button1").text("送信");
+
+    isEnter = true;
+
+  }
+
+});
+</script>
+
+
+
+</body>
+
+
+
+
+</html>
